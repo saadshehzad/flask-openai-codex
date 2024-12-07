@@ -6,7 +6,7 @@ openai.api_key = openai_api_key
 
 app = Flask(__name__)
 
-openai.api_key = 'your-openai-api-key'
+openai.api_key = openai_api_key
 
 @app.route('/')
 def index():
@@ -19,7 +19,7 @@ def generate_code():
     if user_prompt:
         try:
             response = openai.completions.create(
-                model="code-davinci-002",
+                model="gpt-3.5-turbo",
                 prompt=user_prompt,
                 max_tokens=150,
                 temperature=0.7
