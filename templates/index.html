@@ -1,0 +1,107 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Completion Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            width: 60%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        async function submitPrompt() {
+            const prompt = document.getElementById('prompt').value;
+
+            if (!prompt.trim()) {
+                document.getElementById('result').textContent = "Please enter a prompt.";
+                return;
+            }
+
+            const response = await fetch("/generate_code", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `prompt=${prompt}`,
+            });
+
+            const data = await response.json();
+            if (data.generated_code) {
+                document.getElementById('result').textContent = data.generated_code;
+            } else {
+                document.getElementById('result').textContent = "Error: " + (data.error || "An unexpected error occurred.");
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Code Completion Tool</h1>
+        <p>Enter a coding request or a partial code snippet below, and we'll generate or complete the code for you!</p>
+
+        <label for="prompt">Enter your coding request or partial code:</label>
+        <textarea id="prompt" placeholder="e.g., 'Write a function to calculate the factorial of a number'"></textarea>
+
+        <button onclick="submitPrompt()">Generate Code</button>
+
+        <h2>Generated Code:</h2>
+        <pre id="result"></pre>
+    </div>
+
+</body>
+
+</html>
